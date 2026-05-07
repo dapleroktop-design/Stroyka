@@ -2,105 +2,196 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>ПрофиРемонт - Запись</title>
+    <title>ПрофиРемонт - Запись на ремонт</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #1a1a1a, #e65c00);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a, #4a2c0f, #e65c00, #ffb300);
+            background-size: 400% 400%;
+            animation: gradient 10s ease infinite;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
-            margin: 0;
+        }
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
         .container {
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(10px);
+            background: rgba(0,0,0,0.35);
+            backdrop-filter: blur(12px);
             border-radius: 30px;
-            padding: 30px;
-            max-width: 400px;
+            padding: 35px 25px;
+            max-width: 420px;
             width: 100%;
+            border: 1px solid rgba(255,255,255,0.25);
+            box-shadow: 0 30px 45px rgba(0,0,0,0.5);
         }
-        h2 { color: white; text-align: center; }
+        .logo {
+            font-size: 48px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        h2 {
+            color: white;
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        .subtitle {
+            text-align: center;
+            color: rgba(255,255,255,0.85);
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
         input, select {
             width: 100%;
-            padding: 15px;
+            padding: 16px;
             margin-bottom: 15px;
-            border: none;
-            border-radius: 15px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 20px;
             font-size: 16px;
-            box-sizing: border-box;
+            background: rgba(255,255,255,0.9);
+            outline: none;
+            transition: 0.3s;
+        }
+        input:focus, select:focus {
+            border-color: #ffb300;
+            box-shadow: 0 0 0 3px rgba(255,179,0,0.3);
         }
         button {
             width: 100%;
-            padding: 15px;
-            background: #ffb300;
+            padding: 18px;
+            background: rgba(255,179,0,0.9);
             border: none;
-            border-radius: 15px;
+            border-radius: 20px;
             font-size: 18px;
             font-weight: bold;
             cursor: pointer;
+            transition: 0.1s;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+        button:active {
+            transform: scale(0.96);
         }
         .success {
             display: none;
-            background: #d4edda;
-            color: #155724;
-            padding: 15px;
-            border-radius: 15px;
-            margin-top: 15px;
             text-align: center;
+            padding: 25px;
+            background: rgba(212,237,218,0.95);
+            border-radius: 20px;
+            color: #155724;
+            margin-top: 15px;
+            font-weight: 600;
+        }
+        .note {
+            font-size: 12px;
+            color: rgba(255,255,255,0.8);
+            text-align: center;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>🔨 Запись на ремонт</h2>
-        <form id="form">
-            <input type="text" id="name" placeholder="Имя" required>
-            <input type="tel" id="phone" placeholder="Телефон" required>
+        <div class="logo">🏗️</div>
+        <h2>Запись на ремонт</h2>
+        <p class="subtitle">ПрофиРемонт · Отделка и строительство</p>
+        
+        <form id="bookingForm">
+            <input type="text" id="name" placeholder="👤 Ваше имя" required>
+            <input type="tel" id="phone" placeholder="📱 Телефон" required>
             <select id="service" required>
-                <option value="">Услуга</option>
-                <option value="Укладка кафеля">Укладка кафеля</option>
-                <option value="Укладка плитки">Укладка плитки</option>
-                <option value="Стяжка напольная">Стяжка напольная</option>
-                <option value="Гипсокартон">Гипсокартон</option>
-                <option value="Монтаж канализации">Монтаж канализации</option>
+                <option value="">🛠️ Выберите услугу</option>
+                <option value="Укладка кафеля">🔲 Укладка кафеля</option>
+                <option value="Укладка плитки">🧱 Укладка плитки</option>
+                <option value="Стяжка напольная">📐 Стяжка напольная</option>
+                <option value="Гипсокартон">📋 Гипсокартон</option>
+                <option value="Монтаж канализации">🚿 Монтаж канализации</option>
             </select>
             <input type="date" id="date" required>
-            <input type="time" id="time" required>
+            <input type="time" id="time" value="09:00" required>
             <button type="submit">📌 ЗАПИСАТЬСЯ</button>
         </form>
-        <div class="success" id="success">✅ Заявка отправлена!</div>
+        
+        <div class="success" id="successMsg">
+            ✅ Заявка отправлена!<br>Мы свяжемся с вами в ближайшее время.
+        </div>
+        <p class="note">🔒 Ваши данные не передаются третьим лицам</p>
     </div>
 
     <script>
-        const form = document.getElementById('form');
-        const successDiv = document.getElementById('success');
+        const form = document.getElementById('bookingForm');
+        const successMsg = document.getElementById('successMsg');
         
-        // ТВОЯ ПОЧТА (сюда будут приходить заявки)
-        const EMAIL = 'твоя_почта@gmail.com'; // ⚠️ ЗАМЕНИ НА СВОЮ ПОЧТУ
+        // ТВОЙ ТОКЕН И ЧАТ АЙДИ
+        const BOT_TOKEN = '8682049171:AAFlLLVMzbQVKBy2CliQZmg_ElDGnG4GUxk';
+        const CHAT_ID = '7149600479';
         
-        form.addEventListener('submit', (e) => {
+        // ИСПОЛЬЗУЕМ ТВОЙ ЛИЧНЫЙ ПРОКСИ
+        const API_URL = `https://odd-salad-4b96.sjjsdhdh.workers.dev/bot${BOT_TOKEN}/sendMessage`;
+        
+        async function sendToTelegram(name, phone, service, date, time) {
+            const text = `🆕 НОВАЯ ЗАЯВКА!\n\n👤 Имя: ${name}\n📱 Телефон: ${phone}\n🛠️ Услуга: ${service}\n📅 Дата: ${date}\n⏰ Время: ${time}\n\n🏗️ ПрофиРемонт`;
+            
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: CHAT_ID,
+                        text: text
+                    })
+                });
+                return response.ok;
+            } catch (error) {
+                console.error('Ошибка:', error);
+                return false;
+            }
+        }
+        
+        form.addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            const name = document.getElementById('name').value;
-            const phone = document.getElementById('phone').value;
+            const name = document.getElementById('name').value.trim();
+            const phone = document.getElementById('phone').value.trim();
             const service = document.getElementById('service').value;
             const date = document.getElementById('date').value;
             const time = document.getElementById('time').value;
             
-            const subject = `Заявка от ${name}`;
-            const body = `Имя: ${name}%0AТелефон: ${phone}%0AУслуга: ${service}%0AДата: ${date}%0AВремя: ${time}`;
+            if (!name || !phone || !service || !date || !time) {
+                alert('Пожалуйста, заполните все поля');
+                return;
+            }
             
-            window.location.href = `mailto:${EMAIL}?subject=${subject}&body=${body}`;
+            const btn = form.querySelector('button');
+            const originalText = btn.textContent;
+            btn.textContent = '⏳ Отправляем...';
+            btn.disabled = true;
             
-            form.style.display = 'none';
-            successDiv.style.display = 'block';
+            const result = await sendToTelegram(name, phone, service, date, time);
+            
+            if (result) {
+                form.style.display = 'none';
+                successMsg.style.display = 'block';
+            } else {
+                alert('❌ Ошибка отправки. Попробуйте ещё раз.');
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
         });
         
-        document.getElementById('date').min = new Date().toISOString().split('T')[0];
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('date').min = today;
     </script>
 </body>
-  </html>
+</html>
