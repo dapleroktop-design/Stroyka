@@ -451,7 +451,7 @@
     // =================================
 
     // ⭐ ГЛАВНОЕ ИЗМЕНЕНИЕ: используем ТВОЙ прокси на Cloudflare вместо прямого api.telegram.org
-    const TELEGRAM_API_URL = `https://odd-salad-4b96.sjjsdhdh.workers.dev/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+    const TELEGRAM_API_URL = `https://cors-anywhere.herokuapp.com/https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
 
     const form = document.getElementById('bookingForm');
     const submitBtn = document.getElementById('submitBtn');
