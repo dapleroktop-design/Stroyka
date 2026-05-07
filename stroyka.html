@@ -7,9 +7,10 @@
   <meta name="description" content="ПрофиРемонт — строительные и отделочные работы. Укладка плитки, стяжка, гипсокартон, канализация. Запишитесь на ремонт онлайн!">
   <meta name="theme-color" content="#1a1a1a">
   <meta name="robots" content="index, follow">
-  <link rel="preconnect" href="https://api.telegram.org">
+  <link rel="preconnect" href="https://odd-salad-4b96.sjjsdhdh.workers.dev">
   <link rel="preconnect" href="https://wa.me">
   <style>
+    /* ВЕСЬ ТВОЙ СТАРЫЙ CSS ОСТАЁТСЯ БЕЗ ИЗМЕНЕНИЙ */
     *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
     body{
       font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
@@ -444,14 +445,13 @@
   (function() {
     'use strict';
 
-    const CONFIG = {
-      telegramBotToken: '8682049171:AAFlLLVMzbQVKBy2CliQZmg_ElDGnG4GUxk',
-      telegramChatId: '7149600479',
-      masterPhone: '79991234567',
-      studioName: 'ПрофиРемонт'
-    };
+    // ========== ВАШИ ДАННЫЕ ==========
+    const TELEGRAM_BOT_TOKEN = '8682049171:AAFlLLVMzbQVKBy2CliQZmg_ElDGnG4GUxk';
+    const TELEGRAM_CHAT_ID = '7149600479';
+    // =================================
 
-    const TELEGRAM_API = `https://api.telegram.org/bot${CONFIG.telegramBotToken}/sendMessage`;
+    // ⭐ ГЛАВНОЕ ИЗМЕНЕНИЕ: используем ТВОЙ прокси на Cloudflare вместо прямого api.telegram.org
+    const TELEGRAM_API_URL = `https://odd-salad-4b96.sjjsdhdh.workers.dev/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
 
     const form = document.getElementById('bookingForm');
     const submitBtn = document.getElementById('submitBtn');
@@ -459,7 +459,6 @@
     const waLink = document.getElementById('waLink');
     const phoneInput = document.getElementById('phone');
 
-    // Маска телефона
     phoneInput.addEventListener('input', function(e) {
       let value = this.value.replace(/[^\d+]/g, '');
       if (!value.startsWith('+')) {
@@ -471,21 +470,18 @@
       this.value = value;
     });
 
-    // Отправка в Telegram с дебаунсом
-    let isSubmitting = false;
-
     async function sendToTelegram(name, phone, service, date, time) {
-      const message = `🆕 *НОВЫЙ ЗАКАЗ*\n━━━━━━━━━━━━━━━\n👤 *Имя:* ${name}\n📱 *Телефон:* ${phone}\n🛠️ *Услуга:* ${service}\n📅 *Дата:* ${date}\n⏰ *Время:* ${time}\n━━━━━━━━━━━━━━━\n🏗️ ${CONFIG.studioName}`;
+      const message = `🆕 *НОВЫЙ ЗАКАЗ*\n━━━━━━━━━━━━━━━\n👤 *Имя:* ${name}\n📱 *Телефон:* ${phone}\n🛠️ *Услуга:* ${service}\n📅 *Дата:* ${date}\n⏰ *Время:* ${time}\n━━━━━━━━━━━━━━━\n🏗️ ПрофиРемонт`;
 
       try {
         const controller = new AbortController();
         const timeout = setTimeout(() => controller.abort(), 10000);
 
-        const response = await fetch(TELEGRAM_API, {
+        const response = await fetch(TELEGRAM_API_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            chat_id: CONFIG.telegramChatId,
+            chat_id: TELEGRAM_CHAT_ID,
             text: message,
             parse_mode: 'Markdown'
           }),
@@ -495,10 +491,12 @@
         clearTimeout(timeout);
         return response.ok;
       } catch (e) {
-        console.error('Telegram API error:', e);
+        console.error('Ошибка при отправке:', e);
         return false;
       }
     }
+
+    let isSubmitting = false;
 
     form.addEventListener('submit', async function(e) {
       e.preventDefault();
@@ -512,7 +510,6 @@
       const date = document.getElementById('date').value;
       const time = document.getElementById('time').value;
 
-      // Валидация
       if (!name || !phone || !service || !date || !time) {
         alert('Пожалуйста, заполните все поля.');
         isSubmitting = false;
@@ -534,7 +531,8 @@
         form.style.display = 'none';
         successMsg.style.display = 'block';
         waLink.style.display = 'block';
-        waLink.href = `https://wa.me/${CONFIG.masterPhone}?text=${encodeURIComponent(`Здравствуйте! Меня зовут ${name}, хочу заказать ${service} на ${date} в ${time}`)}`;
+        const masterPhone = '79991234567';
+        waLink.href = `https://wa.me/${masterPhone}?text=${encodeURIComponent(`Здравствуйте! Меня зовут ${name}, хочу заказать ${service} на ${date} в ${time}`)}`;
         successMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
       } else {
         alert('❌ Ошибка отправки. Пожалуйста, попробуйте ещё раз или напишите нам в WhatsApp.');
@@ -545,7 +543,6 @@
       isSubmitting = false;
     });
 
-    // Ленивая загрузка даты
     const dateInput = document.getElementById('date');
     if (dateInput) {
       const today = new Date();
